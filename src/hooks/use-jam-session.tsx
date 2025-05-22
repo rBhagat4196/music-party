@@ -255,7 +255,7 @@ export const useJamSession = (roomId?: string) => {
       const now = new Date();
       let newPosition = position;
       
-      if (room.isPlaying) {
+      if (!room.isPlaying) {
         // Pausing - store the current position
         newPosition = position;
       } else {
@@ -282,8 +282,7 @@ export const useJamSession = (roomId?: string) => {
     if (room?.id) {
       try {
         await updateDoc(doc(db, "rooms", room.id), {
-          [`participants.${currentUser.id}.isMicOn`]: newMicState,
-          lastUpdated: new Date(),
+          [`participants.${currentUser.id}.isMicOn`]: newMicState
         });
       } catch (error) {
         console.error("Error toggling mic:", error);
@@ -368,8 +367,7 @@ export const useJamSession = (roomId?: string) => {
         if (!roomSnap.exists()) return;
 
         const updates = {
-          [`participants.${currentUser.id}`]: deleteField(),
-          lastUpdated: new Date(),
+          [`participants.${currentUser.id}`]: deleteField()
         };
 
         if (isHost) {
@@ -412,8 +410,7 @@ export const useJamSession = (roomId?: string) => {
             roomSnap.data()?.participants?.[userId]?.hasAddToQueuePermission || false;
 
           await updateDoc(roomRef, {
-            [`participants.${userId}.hasAddToQueuePermission`]: !currentPermission,
-            lastUpdated: new Date(),
+            [`participants.${userId}.hasAddToQueuePermission`]: !currentPermission
           });
         }
       } catch (error) {
