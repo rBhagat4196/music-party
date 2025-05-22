@@ -181,6 +181,7 @@ export const useJamSession = (roomId?: string) => {
       await updateDoc(roomRef, {
         [`participants.${currentUser.id}`]: currentUser,
         lastUpdated: new Date(),
+        position: calculatedPosition
       });
 
       setidroom(roomIdToJoin);
