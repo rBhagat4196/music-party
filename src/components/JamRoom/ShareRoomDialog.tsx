@@ -89,7 +89,7 @@ const ShareRoomDialog: React.FC<ShareRoomDialogProps> = ({ roomId, roomName }) =
         </DialogHeader>
         
         <div className="space-y-6">
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label htmlFor="shareLink" className="text-sm font-medium">
               Room Link
             </label>
@@ -112,7 +112,7 @@ const ShareRoomDialog: React.FC<ShareRoomDialogProps> = ({ roomId, roomName }) =
                 {isCopied ? <Check className="h-4 w-4" /> : <Link className="h-4 w-4" />}
               </Button>
             </div>
-          </div>
+          </div> */}
           
           <div className="space-y-2">
             <label className="text-sm font-medium">
