@@ -1,74 +1,89 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 import { db } from '@/hooks/use-jam-session';
-import { doc, setDoc, deleteField, updateDoc, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc, deleteField, onSnapshot } from 'firebase/firestore';
 
-const VoiceChat = ({ roomId, userId }) => {
+const VoiceChat = ({ roomId, userId, isMicOn }) => {
   const [peerId, setPeerId] = useState(null);
   const [peers, setPeers] = useState({});
   const localStreamRef = useRef(null);
   const peerInstanceRef = useRef(null);
   const connectionsRef = useRef({});
 
-  // 🔊 Init PeerJS and mic
+  // 🔊 Init Peer and microphone stream
   useEffect(() => {
     const peer = new Peer();
     peerInstanceRef.current = peer;
 
-    navigator.mediaDevices.getUserMedia({ 
+    navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
-        autoGainControl: true
-      }
+        autoGainControl: true,
+      },
     }).then((stream) => {
       localStreamRef.current = stream;
+
+      // Enable or disable mic based on prop
+      stream.getAudioTracks().forEach(track => {
+        track.enabled = isMicOn;
+      });
 
       peer.on('open', async (id) => {
         setPeerId(id);
         const userDoc = doc(db, 'rooms', roomId);
         await updateDoc(userDoc, {
           [`participants.${userId}.peerId`]: id,
-          [`participants.${userId}.isMicOn`]: true,
+          [`participants.${userId}.isMicOn`]: isMicOn,
         });
       });
 
       peer.on('call', (call) => {
         call.answer(stream);
         call.on('stream', (remoteStream) => {
-          if (call.peer !== peerInstanceRef.current?.id) { // Don't play our own audio
+          if (call.peer !== peerInstanceRef.current?.id) {
             attachRemoteAudio(call.peer, remoteStream);
           }
         });
       });
     }).catch(err => {
-      console.error('Failed to get microphone access:', err);
+      console.error('Microphone access error:', err);
     });
 
     return () => {
-      // Close all peer connections
       Object.values(connectionsRef.current).forEach(call => call.close());
-      
-      // Cleanup local media stream
+
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach(track => track.stop());
       }
-      
-      // Destroy peer instance
+
       if (peerInstanceRef.current) {
         peerInstanceRef.current.destroy();
       }
-      
-      // Cleanup Firestore
+
       const userDoc = doc(db, 'rooms', roomId);
       updateDoc(userDoc, {
         [`participants.${userId}.peerId`]: deleteField(),
         [`participants.${userId}.isMicOn`]: false,
-      }).catch(err => console.error('Firestore cleanup error:', err));
+      }).catch(console.error);
     };
   }, [roomId, userId]);
 
-  // 📡 Listen for other participants' peer IDs
+  // 🔁 Sync isMicOn changes to mic + Firestore
+  useEffect(() => {
+    if (!localStreamRef.current) return;
+
+    localStreamRef.current.getAudioTracks().forEach(track => {
+      track.enabled = isMicOn;
+    });
+
+    const userDoc = doc(db, 'rooms', roomId);
+    updateDoc(userDoc, {
+      [`participants.${userId}.isMicOn`]: isMicOn,
+    });
+  }, [isMicOn]);
+
+  // 📡 Handle remote connections
   useEffect(() => {
     if (!peerId) return;
 
@@ -78,10 +93,10 @@ const VoiceChat = ({ roomId, userId }) => {
 
       Object.entries(data.participants).forEach(([id, info]) => {
         if (
-          id !== userId && // Not ourselves
-          info.peerId && // Has a peer ID
-          info.peerId !== peerId && // Not our own peer ID
-          !connectionsRef.current[info.peerId] // Not already connected
+          id !== userId &&
+          info.peerId &&
+          !connectionsRef.current[info.peerId] &&
+          info.isMicOn
         ) {
           const call = peerInstanceRef.current.call(info.peerId, localStreamRef.current);
           call.on('stream', (remoteStream) => {
@@ -95,7 +110,6 @@ const VoiceChat = ({ roomId, userId }) => {
     return () => unsub();
   }, [peerId, roomId, userId]);
 
-  // 🎤 Attach remote audio to DOM
   const attachRemoteAudio = (peerId, stream) => {
     if (peers[peerId]) return;
 
@@ -103,18 +117,19 @@ const VoiceChat = ({ roomId, userId }) => {
     audio.srcObject = stream;
     audio.autoplay = true;
     audio.playsInline = true;
-    audio.volume = 1.0;
-    
+
     setPeers((prev) => ({ ...prev, [peerId]: audio }));
   };
 
   return (
     <div className="p-4 rounded-xl bg-gray-900 text-white shadow-xl hidden">
-      <h2 className="text-xl font-bold mb-2">🎙 Voice Chat Active</h2>
-      <p className="text-sm text-gray-400">Connected as: <strong>{userId}</strong></p>
-      <ul className="mt-2 list-disc list-inside">
+      <h2 className="text-xl font-bold mb-2">🎙 Voice Chat</h2>
+      <p className="text-sm text-gray-400">User: <strong>{userId}</strong></p>
+      <p className="text-sm text-gray-400">Mic is: <strong>{isMicOn ? 'ON 🎤' : 'OFF 🔇'}</strong></p>
+
+      <ul className="mt-4 list-disc list-inside text-sm text-green-400">
         {Object.keys(peers).map((pid) => (
-          <li key={pid}>🔊 Connected to: {pid}</li>
+          <li key={pid}>🔊 Listening to: {pid}</li>
         ))}
       </ul>
     </div>

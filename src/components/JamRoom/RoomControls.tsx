@@ -170,7 +170,7 @@ const RoomControls: React.FC<RoomControlsProps> = ({
             )}
           </Button>
 
-          {isMicOn && <VoiceChat roomId={roomId} userId={userId} />}
+          <VoiceChat roomId={roomId} userId={userId} isMicOn={isMicOn}/>
 
           <div className="hidden md:flex items-center space-x-2">
             <Volume className="h-4 w-4 text-spotify-subtext" />
