@@ -88,7 +88,7 @@ export const useJamSession = (roomId?: string) => {
       name: `User ${userId.substr(5, 4)}`,
       avatarUrl: `https://i.pravatar.cc/150?u=${userId}`,
       isPremium: true,
-      isMicOn: false,
+      isMicOn: true,
       hasAddToQueuePermission: true,
       lastActive: new Date(),
     });
