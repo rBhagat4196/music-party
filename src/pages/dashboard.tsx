@@ -232,7 +232,7 @@ export default function Dashboard() {
                       value={formData.title}
                       onChange={handleInputChange}
                       placeholder="Song title"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       required
                     />
                   </div>
@@ -244,7 +244,7 @@ export default function Dashboard() {
                       value={formData.artist}
                       onChange={handleInputChange}
                       placeholder="Artist name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       required
                     />
                   </div>
@@ -261,7 +261,7 @@ export default function Dashboard() {
                       name="albumArtFile"
                       accept="image/*"
                       onChange={handleFileChange}
-                      className="w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                      className="w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
                     {previewUrl && (
                       <div className="mt-2">
@@ -279,7 +279,7 @@ export default function Dashboard() {
                       name="audioFile"
                       accept="audio/*"
                       onChange={handleFileChange}
-                      className="w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                      className="w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                       required
                     />
                     {duration > 0 && (
@@ -289,14 +289,14 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-black mb-1">Category (Optional)</label>
+                  <label className="block text-sm font-medium text-white mb-1">Category (Optional)</label>
                   <input
                     type="text"
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
                     placeholder="e.g. Rock, Pop, Classical"
-                    className="text-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
