@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Home, Music, Users, ListMusic } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Home, Music, Users, ListMusic, PlusCircle } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '@/hooks/use-jam-session';
 
@@ -161,7 +161,7 @@ const Index = () => {
 
       {/* Sidebar */}
       <div className="w-64 bg-spotify-dark-elevated p-4 flex flex-col">
-        <h1 className="text-2xl font-bold mb-8 text-spotify-green">Music App</h1>
+        <h1 className="text-2xl font-bold mb-8 text-spotify-green">TuneTalk</h1>
         
         <nav className="flex-1">
           <ul className="space-y-2">
@@ -174,7 +174,7 @@ const Index = () => {
                 className={`flex items-center w-full p-3 rounded-md ${activeView === 'spotify' && !activeCategory ? 'bg-spotify-dark-highlight' : 'hover:bg-spotify-dark-highlight'}`}
               >
                 <Home className="mr-3" size={20} />
-                Spotify
+                Home
               </button>
             </li>
             <li>
@@ -184,6 +184,15 @@ const Index = () => {
               >
                 <Users className="mr-3" size={20} />
                 Jamming
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="flex items-center w-full p-3 rounded-md hover:bg-spotify-dark-highlight"
+              >
+                <PlusCircle className="mr-3" size={20} />
+                Manage Songs
               </button>
             </li>
             <li className="mt-6">
@@ -318,7 +327,7 @@ const Index = () => {
         ) : (
           <div className="max-w-3xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-spotify-green to-spotify-purple">
-              Spotify Jam Session
+              TuneTalk Session
             </h1>
             
             <p className="text-xl md:text-2xl text-spotify-subtext mb-8">
@@ -331,13 +340,6 @@ const Index = () => {
                 className="bg-spotify-green hover:bg-spotify-light-green text-black text-lg font-medium py-6 px-8 rounded-full transform hover:scale-105 transition-all duration-300"
               >
                 Start Jamming
-              </Button>
-              
-              <Button
-                onClick={() => navigate('/dashboard')}
-                className="bg-spotify-dark-highlight hover:bg-spotify-dark-elevated text-white text-lg font-medium py-6 px-8 rounded-full transform hover:scale-105 transition-all duration-300 border border-spotify-dark-highlight"
-              >
-                Manage Music
               </Button>
             </div>
             
