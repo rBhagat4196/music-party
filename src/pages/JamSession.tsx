@@ -65,7 +65,7 @@ const JamSession = () => {
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-12">
             <Card className="bg-spotify-dark-elevated border-spotify-dark-highlight p-6 w-full max-w-md text-center">
               <h1 className="text-4xl font-bold mb-2 text-white">
-                Spotify Jam
+                Tune-Talk Jam
               </h1>
               <p className="text-spotify-subtext mb-8">
                 Create or join a real-time music session with friends

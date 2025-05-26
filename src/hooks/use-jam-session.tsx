@@ -48,6 +48,7 @@ export type Song = {
   addedBy: string;
   addedAt?: Date;
   songURL?:string;
+  category?:string;
 };
 
 export type Room = {
